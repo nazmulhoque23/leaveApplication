@@ -22,10 +22,11 @@ public class LeaveApplicationDTO {
 
     private UserDTO userDTO;
 
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+    //shape=JsonFormat.Shape.STRING,
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date fromDate;
 
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date toDate;
 
     private String status;

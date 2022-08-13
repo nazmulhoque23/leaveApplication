@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface LeaveTypeRepository extends JpaRepository<LeaveType, Long> {
     LeaveType findByName(String name);
+
+    //LeaveType
     //LeaveType findById(Long id);
     //List<LeaveType> findByNameContaining(String name);
 }

@@ -9,6 +9,7 @@ import com.example.leaveapplication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -55,6 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/registerUser")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO){
         User existing = userService.findByEmail(userDTO.getEmail());
         if(existing != null){
@@ -65,6 +67,7 @@ public class AuthController {
     }
 
     @PostMapping("/registerManager")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> registerManager(@RequestBody UserDTO userDTO){
         User existing = userService.findByEmail(userDTO.getEmail());
         if(existing != null){

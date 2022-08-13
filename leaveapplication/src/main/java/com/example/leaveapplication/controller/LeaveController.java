@@ -1,14 +1,14 @@
 package com.example.leaveapplication.controller;
 
 import com.example.leaveapplication.dto.LeaveApplicationDTO;
-import com.example.leaveapplication.entity.LeaveApplication;
-import com.example.leaveapplication.repository.LeaveRepository;
+import com.example.leaveapplication.dto.LeaveApplicationProjection;
 import com.example.leaveapplication.service.LeaveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 @RestController
@@ -26,20 +26,26 @@ public class LeaveController {
                 //leaveService.createLeave(leaveDTO));
     }
 
-    @GetMapping
+    @GetMapping("getAllLeavesByStatus/{status}")
     @PreAuthorize("hasAnyAuthority('USER','MANAGER')")
-    public ResponseEntity<LeaveApplicationDTO> getAllLeaves(){
-        return ResponseEntity.ok(leaveService.getAllLUserLeaves());
+    public ResponseEntity<List<LeaveApplicationProjection>> getAllLeavesByStatus(@PathVariable("status") String status){
+        return ResponseEntity.ok(leaveService.getAllLUserLeavesByStatus(status));
 
     }
 
+    @GetMapping("getAllLeavesByType/{leaveType}")
+    @PreAuthorize("hasAnyAuthority('USER','MANAGER')")
+    public ResponseEntity<List<LeaveApplicationProjection>> getAllLeavesByType(@PathVariable("leaveType") String leaveType){
+        return ResponseEntity.ok(leaveService.getAllUserLeavesByType(leaveType));
 
-    @PutMapping("approveLeave/{id}")
+    }
+
+    @PutMapping("approveOrDenyLeave/{id}")
     @PreAuthorize("hasAuthority('MANAGER')")
     public ResponseEntity<LeaveApplicationDTO> approveUserRequestedLeave(@PathVariable Long id, @RequestBody LeaveApplicationDTO leaveDTO){
         System.out.println(leaveDTO);
 
-        return ResponseEntity.ok(leaveService.approveUserLeave(id, leaveDTO));
+        return ResponseEntity.ok(leaveService.approveorDenyUserLeave(id, leaveDTO));
     }
 
     /*@PostMapping

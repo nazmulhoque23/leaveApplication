@@ -2,10 +2,8 @@ package com.example.leaveapplication.service;
 
 import com.example.leaveapplication.configuration.CustomUserDetailsService;
 import com.example.leaveapplication.dto.LeaveApplicationDTO;
-import com.example.leaveapplication.dto.LeaveTypeDTO;
-import com.example.leaveapplication.dto.UserDTO;
+import com.example.leaveapplication.dto.LeaveApplicationProjection;
 import com.example.leaveapplication.entity.LeaveApplication;
-import com.example.leaveapplication.entity.LeaveType;
 import com.example.leaveapplication.entity.User;
 import com.example.leaveapplication.mappers.LeaveMapStructMapper;
 import com.example.leaveapplication.mappers.LeaveTypeMapStructMapper;
@@ -18,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Service
 public class LeaveServiceImpl implements LeaveService{
@@ -47,6 +45,7 @@ public class LeaveServiceImpl implements LeaveService{
 
         //SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
+
         Long id =  userDetailsService.getCurrentUser().getId();
         leaveApplicationDTO.setFromDate(leaveApplicationDTO.getFromDate());
         leaveApplicationDTO.setRemark(leaveApplicationDTO.getRemark());
@@ -70,15 +69,24 @@ public class LeaveServiceImpl implements LeaveService{
     }
 
     @Override
-    public LeaveApplicationDTO getAllLUserLeaves() {
-        return (LeaveApplicationDTO) leaveRepo.findAll().stream().map(userLeave->leaveMapper.mapToDTO(userLeave));
+    public List<LeaveApplicationProjection> getAllLUserLeavesByStatus(String status) {
+        return leaveRepo.getAllByStatus(status);
     }
+
+    @Override
+    public List<LeaveApplicationProjection> getAllUserLeavesByType(String leaveType) {
+        return leaveRepo.getAllByLeaveType(leaveType);
+    }
+
+    @Autowired
+    LeaveBalanceService leaveBalanceService;
 
     @Transactional
     @Override
-    public LeaveApplicationDTO approveUserLeave(Long id, LeaveApplicationDTO leaveDTO) {
+    public LeaveApplicationDTO approveorDenyUserLeave(Long id, LeaveApplicationDTO leaveDTO) {
 
-        LeaveApplication userLeaveRequest = leaveRepo.findById(id).orElseThrow(()->null);
+
+        LeaveApplication userLeaveRequest = leaveRepo.findByUserId(id);//.orElse(null);
 
         User userManager = userLeaveRequest.getUser().getManager();
 
@@ -94,7 +102,10 @@ public class LeaveServiceImpl implements LeaveService{
         }
 
         userLeaveRequest.setStatus(StatusMapper.mapLeaveStatus(leaveDTO.getStatus()));
+
         leaveRepo.save(userLeaveRequest);
+
+        //leaveBalanceService.updateLeaveBalance();
 
         LeaveApplicationDTO modifiedLeaveDTO = leaveMapper.mapToDTO(userLeaveRequest);
 
