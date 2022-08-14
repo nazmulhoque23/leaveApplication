@@ -35,7 +35,7 @@ public class LeaveBalanceController {
 
     @GetMapping("getLeaveBalanceofaUser/")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<LeaveBalance> getLeaveBalanceOfUser(){
+    public ResponseEntity<LeaveBalanceProjection> getLeaveBalanceOfUser(){
         return ResponseEntity.ok(leaveBalanceService.showLeaveBalance());
 
     }

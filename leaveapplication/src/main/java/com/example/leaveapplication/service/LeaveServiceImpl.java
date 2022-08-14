@@ -62,7 +62,7 @@ public class LeaveServiceImpl implements LeaveService{
 
         Long id =  userDetailsService.getCurrentUser().getId();
 
-        LeaveBalance leaveBalance = leaveBalanceRepository.findLeaveBalanceByUserId(id);
+        LeaveBalance leaveBalance = leaveBalanceRepository.findLeaveBalanceByUserIdNotProjection(id);
 
         if(leaveBalance.getSickLeaveDays()<=0  && leaveBalance.getCasualLeaveDays()<=0){
             throw new RuntimeException("SORRY YOUR LEAVE DO NOT HAVE SUFFICIENT LEAVE BALANCES");
@@ -131,7 +131,7 @@ public class LeaveServiceImpl implements LeaveService{
         LeaveApplication userLeaveRequest = leaveRepo.findById(id).orElseThrow(()->{throw new RuntimeException("DATA NOT FOUND");});
 
         Long userId =  userLeaveRequest.getUser().getId();
-        LeaveBalance projectedLeaveBalance = leaveBalanceRepository.findLeaveBalanceByUserId(userId);
+        LeaveBalance projectedLeaveBalance = leaveBalanceRepository.findLeaveBalanceByUserIdNotProjection(userId);
 
         User userManager = userLeaveRequest.getUser().getManager();
 

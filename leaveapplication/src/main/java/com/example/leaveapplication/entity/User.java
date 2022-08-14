@@ -37,14 +37,16 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
     private User manager;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//CascadeType.ALL,
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "user_role",
                 joinColumns = @JoinColumn(name = "user_id"),
                 inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;
 
-
+    public User(String userName){
+        this.userName = userName;
+    }
 
     public User(Long id, String email, String userName, String password, User manager, List<Role> roles) {
         this.id = id;

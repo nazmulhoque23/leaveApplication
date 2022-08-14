@@ -13,7 +13,7 @@ public interface LeaveBalanceService {
 
     //public LeaveBalanceProjection showLeaveBalance();
 
-    public LeaveBalance showLeaveBalance();
+    public LeaveBalanceProjection showLeaveBalance();
 
 
     //public LeaveBalance updateLeaveBalance();

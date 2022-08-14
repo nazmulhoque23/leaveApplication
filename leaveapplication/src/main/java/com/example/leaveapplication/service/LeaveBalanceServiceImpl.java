@@ -75,7 +75,7 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
     }
 
     @Override
-    public LeaveBalance showLeaveBalance() {
+    public LeaveBalanceProjection showLeaveBalance() {
         Long currentUserId = userDetails.getCurrentUser().getId();
         String role = userDetails.getCurrentUser().getAuthorities().iterator().next().toString();
 
