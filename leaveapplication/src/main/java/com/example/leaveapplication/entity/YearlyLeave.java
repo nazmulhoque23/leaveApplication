@@ -20,7 +20,7 @@ public class YearlyLeave {
     private String year;
 
     @Column(name = "maximum_day")
-    private int maxDay;
+    private Long maxDay;
 
 
     @OneToOne
@@ -42,11 +42,11 @@ public class YearlyLeave {
         this.year = year;
     }
 
-    public int getMaxDay() {
+    public Long getMaxDay() {
         return maxDay;
     }
 
-    public void setMaxDay(int maxDay) {
+    public void setMaxDay(Long maxDay) {
         this.maxDay = maxDay;
     }
 

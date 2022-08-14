@@ -1,8 +1,8 @@
 package com.example.leaveapplication.dto;
 
 public interface LeaveBalanceProjection {
-    int getsick_leave();
-    int getcasual_leave();
+    Long getsick_leave();
+    Long getcasual_leave();
     String getYear();
     String getuser_name();
 }

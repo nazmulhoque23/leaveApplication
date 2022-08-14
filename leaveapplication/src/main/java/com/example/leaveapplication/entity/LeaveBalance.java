@@ -26,13 +26,53 @@ public class LeaveBalance {
     private User user;
 
     @Column(name = "sick_leave")
-    private int sickLeaveDays;
+    private Long sickLeaveDays;
 
     @Column(name = "casual_leave")
-    private int casualLeaveDays;
+    private Long casualLeaveDays;
 
     @Column(name = "year")
     private String year;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Long getSickLeaveDays() {
+        return sickLeaveDays;
+    }
+
+    public void setSickLeaveDays(Long sickLeaveDays) {
+        this.sickLeaveDays = sickLeaveDays;
+    }
+
+    public Long getCasualLeaveDays() {
+        return casualLeaveDays;
+    }
+
+    public void setCasualLeaveDays(Long casualLeaveDays) {
+        this.casualLeaveDays = casualLeaveDays;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
 
     /*@OneToOne
     @JoinColumn(name = "leave_application")

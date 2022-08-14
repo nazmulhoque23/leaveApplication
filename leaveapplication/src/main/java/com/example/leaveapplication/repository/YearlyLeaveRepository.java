@@ -14,5 +14,5 @@ public interface YearlyLeaveRepository extends JpaRepository<YearlyLeave, Long> 
     YearlyLeave findAllById(Long id);
 
     @Query(value = "select maximum_day from yearly_leave left outer join Leavetype on yearly_leave.leave_type_id = Leavetype.id where Leavetype.name = :type ", nativeQuery = true)
-    int findMaxDay(String type);
+    Long findMaxDay(String type);
 }

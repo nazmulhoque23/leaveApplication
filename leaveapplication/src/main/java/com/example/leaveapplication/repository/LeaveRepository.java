@@ -24,11 +24,17 @@ public interface LeaveRepository extends JpaRepository<LeaveApplication, Long> {
     List<LeaveApplicationProjection> getAllByLeaveType(String leaveType);
 
     @Query(value = "select * from Leaveapplication left join users on Leaveapplication.user_id =users.id where users.id = :userId  ", nativeQuery = true)
-    LeaveApplication findByUserId(Long userId);
+    List<LeaveApplication> findByUserId(Long userId);
 
     LeaveApplication findByStatus(LeaveStatus status);
 //Leaveapplication.from_date, Leaveapplication.to_date, Leaveapplication.status, Leaveapplication.remark, Leavetype.name as leaveType
     @Query(value = "select Leaveapplication.from_date, Leaveapplication.to_date, Leaveapplication.status,  Leaveapplication.remark, Leavetype.name as leaveType from Leaveapplication left outer join Leavetype on Leaveapplication.leave_type =  Leavetype.id where Leaveapplication.from_date>=:fromDate and Leaveapplication.to_date<=:toDate  ", nativeQuery = true)
     List<LeaveApplicationProjection> findAllbetweenDates(LocalDate fromDate, LocalDate toDate);
     //LeaveApplication findByUser(Long id);
+
+    @Query(value = "select Leaveapplication.from_date, Leaveapplication.to_date, Leaveapplication.status, Leaveapplication.remark, Leavetype.name as leaveType from Leaveapplication join Leavetype on Leaveapplication.leave_type = Leavetype.id join Users on Leaveapplication.user_id =  Users.id where Users.id = :id and Leaveapplication.status =:status", nativeQuery = true)
+    List<LeaveApplicationProjection> findAllLeaveByStatus(Long id, String status);
+
+    @Query(value = "select Leaveapplication.from_date, Leaveapplication.to_date, Leaveapplication.status, Leaveapplication.remark, Leavetype.name as leaveType from Leaveapplication join Leavetype on Leaveapplication.leave_type = Leavetype.id join Users on Leaveapplication.user_id =  Users.id where Users.id = :id and Leavetype.name =:leaveType", nativeQuery = true)
+    List<LeaveApplicationProjection> findAllLeaveByType(Long id, String leaveType);
 }

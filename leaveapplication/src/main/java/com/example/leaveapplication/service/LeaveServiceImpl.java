@@ -91,11 +91,32 @@ public class LeaveServiceImpl implements LeaveService{
 
     @Override
     public List<LeaveApplicationProjection> getAllLUserLeavesByStatus(String status) {
+
+        Long id =  userDetailsService.getCurrentUser().getId();
+
+        List<LeaveApplication> findLeaveApplication = leaveRepo.findByUserId(id);
+        for(LeaveApplication leaveapp:findLeaveApplication){
+            if(leaveapp.getUser().getId().equals(id)){
+                return leaveRepo.findAllLeaveByStatus(id, status);
+            }
+
+        }
+
         return leaveRepo.getAllByStatus(status);
     }
 
     @Override
     public List<LeaveApplicationProjection> getAllUserLeavesByType(String leaveType) {
+        Long id =  userDetailsService.getCurrentUser().getId();
+
+        List<LeaveApplication> findLeaveApplication = leaveRepo.findByUserId(id);
+        for(LeaveApplication leaveapp:findLeaveApplication){
+            if(leaveapp.getUser().getId().equals(id)){
+                return leaveRepo.findAllLeaveByType(id, leaveType);
+            }
+
+        }
+
         return leaveRepo.getAllByLeaveType(leaveType);
     }
 
@@ -109,7 +130,8 @@ public class LeaveServiceImpl implements LeaveService{
         //LeaveApplication userLeaveRequest = leaveRepo.findByUserId(id);//.orElse(null);
         LeaveApplication userLeaveRequest = leaveRepo.findById(id).orElseThrow(()->{throw new RuntimeException("DATA NOT FOUND");});
 
-        LeaveBalance projectedLeaveBalance = leaveBalanceRepository.findLeaveBalanceByUserId(id);
+        Long userId =  userLeaveRequest.getUser().getId();
+        LeaveBalance projectedLeaveBalance = leaveBalanceRepository.findLeaveBalanceByUserId(userId);
 
         User userManager = userLeaveRequest.getUser().getManager();
 
@@ -124,18 +146,24 @@ public class LeaveServiceImpl implements LeaveService{
             }
         }
 
+        LocalDate fromDate = userLeaveRequest.getFromDate();
+        LocalDate toDate = userLeaveRequest.getTo_date();
+        Long day1 = Long.valueOf(fromDate.getDayOfMonth());
+        Long day2 = Long.valueOf(toDate.getDayOfMonth());
+
+        Long duration = day2 -day1;
 
 
         if(StatusMapper.mapLeaveStatus(leaveDTO.getStatus()).equals(LeaveStatus.APPROVED)){
             userLeaveRequest.setStatus(StatusMapper.mapLeaveStatus(leaveDTO.getStatus()));
-            if(userLeaveRequest.getStatus().equals(LeaveStatus.APPROVED)){
-                int balance = projectedLeaveBalance.getSickLeaveDays()-1;
+            if(userLeaveRequest.getLeaveType().getName().equals("sick leave")){
+                Long balance = projectedLeaveBalance.getSickLeaveDays() - duration;
                 projectedLeaveBalance.setSickLeaveDays(balance);
                 leaveBalanceRepository.save(projectedLeaveBalance);
             }
 
-            else if (userLeaveRequest.getStatus().equals("casual leave")){
-                int balance = projectedLeaveBalance.getCasualLeaveDays()-1;
+            else if (userLeaveRequest.getLeaveType().getName().equals("casual leave")){
+                Long balance = projectedLeaveBalance.getCasualLeaveDays() - duration;
                 projectedLeaveBalance.setCasualLeaveDays(balance);
                 leaveBalanceRepository.save(projectedLeaveBalance);
             }

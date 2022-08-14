@@ -47,8 +47,8 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
         //Role role = roleRepo.findByRoleName(RoleEnum.USER);
         List<User> users = userRepo.findAllByRoleId(Long.valueOf(1));
 
-        int sickLeaveDays = yearlyLeaveRepository.findMaxDay("sick leave");
-        int casualLeaveDays = yearlyLeaveRepository.findMaxDay("casual leave");
+        Long sickLeaveDays = yearlyLeaveRepository.findMaxDay("sick leave");
+        Long casualLeaveDays = yearlyLeaveRepository.findMaxDay("casual leave");
 
 
         LeaveBalance leaveBalance = new LeaveBalance();
