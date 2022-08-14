@@ -6,6 +6,7 @@ import com.example.leaveapplication.configuration.JwTokenProvider;
 import com.example.leaveapplication.dto.UserDTO;
 import com.example.leaveapplication.entity.User;
 import com.example.leaveapplication.service.UserService;
+import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,6 +86,23 @@ public class AuthController {
         ResponseCookie cookie = tokenProvider.getCleanJwtCookie();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body("you have been logged out");
     }*/
+
+    @PutMapping("/change-password")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','USER')")
+    public ResponseEntity<?> changePassword(@RequestParam("oldPassword") String oldPassword, @RequestParam("newPassword") String newPassword){
+        userService.changePassword(oldPassword, newPassword);
+        return ResponseEntity.ok("Password has been changed");
+    }
+
+    @GetMapping("/logout")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER','USER')")
+    public ResponseEntity<?> logOutFunction(HttpServletRequest request, HttpServletResponse response){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth!=null){
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return ResponseEntity.ok("You have been logged out");
+    }
 
 
 }

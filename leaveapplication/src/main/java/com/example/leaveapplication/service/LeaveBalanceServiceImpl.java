@@ -75,41 +75,12 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
     }
 
     @Override
-    public LeaveBalanceProjection showLeaveBalance() {
+    public LeaveBalance showLeaveBalance() {
         Long currentUserId = userDetails.getCurrentUser().getId();
         String role = userDetails.getCurrentUser().getAuthorities().iterator().next().toString();
 
         return leaveBalanceRepository.findLeaveBalanceByUserId(currentUserId);
 
-    }
-
-    @Override
-    public LeaveBalance updateLeaveBalance(){
-        Long currentUserId = userDetails.getCurrentUser().getId();
-
-        LeaveBalance leaveBalance = (LeaveBalance) leaveBalanceRepository.findLeaveBalanceByUserId(currentUserId);
-
-
-        LeaveApplication leaveApplication = leaveRepo.findByUserId(currentUserId);
-
-        LeaveType type = leaveTypeRepository.findByName("sick leave");
-        LeaveType type2 = leaveTypeRepository.findByName("casual leave");
-
-        LeaveStatus status = leaveApplication.getStatus();
-
-        if(leaveApplication.getLeaveType().equals(type) && status.equals(LeaveStatus.APPROVED)) {
-            int balance = leaveBalance.getSickLeaveDays() -1;
-            //balance = balance -1;
-            leaveBalanceRepository.save(leaveBalance);
-
-        }
-        else if(leaveApplication.getLeaveType().equals(type2)&&status.equals(LeaveStatus.APPROVED)){
-            int balance = leaveBalance.getCasualLeaveDays() - 1;
-            //balance = balance -1;
-            leaveBalanceRepository.save(leaveBalance);
-        }
-
-        return null;
     }
 
 }

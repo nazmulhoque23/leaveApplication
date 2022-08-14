@@ -16,6 +16,7 @@ public interface LeaveBalanceRepository extends JpaRepository<LeaveBalance, Long
     @Query(value = "select leavebalance.sick_leave, leavebalance.casual_leave, users.user_name, leavebalance.year  from leavebalance left join users on leavebalance.user_id =users.id", nativeQuery = true)
     List<LeaveBalanceProjection> getAll();
 ///
-    @Query(value = "select leavebalance.sick_leave, leavebalance.casual_leave, leavebalance.year, users.user_name from leavebalance left join users on leavebalance.user_id =users.id where users.id = :id ", nativeQuery = true)
-    LeaveBalanceProjection findLeaveBalanceByUserId(Long id);
+    //@Query(value = "select leavebalance.sick_leave, leavebalance.casual_leave, leavebalance.year, users.user_name from leavebalance left join users on leavebalance.user_id =users.id where users.id = :id ", nativeQuery = true)
+@Query(value = "select * from leavebalance left join users on leavebalance.user_id =users.id where users.id = :id ", nativeQuery = true)
+    LeaveBalance findLeaveBalanceByUserId(Long id);
 }

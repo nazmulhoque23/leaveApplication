@@ -1,5 +1,6 @@
 package com.example.leaveapplication.service;
 
+import com.example.leaveapplication.configuration.CustomUserDetailsService;
 import com.example.leaveapplication.dto.UserDTO;
 import com.example.leaveapplication.entity.Role;
 import com.example.leaveapplication.entity.User;
@@ -20,6 +21,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private CustomUserDetailsService userDetails;
 
     @Autowired
     private RoleRepository roleRepo;
@@ -71,14 +75,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createManager(UserDTO userDTO) {
-        /*if (userDTO.getManager() != null
-                && userDTO.getManager().getId() != null
-                && userRepo.findById(userDTO.getManager().getId()).isPresent()) {
-            return null;// will implement an datanotfoundexception
-        }
-        UserDTO userDTO = new UserDTO();*/
-
-
         Role role = roleRepo.findByRoleName(RoleEnum.MANAGER);
 
         userDTO.setEmail(userDTO.getEmail());
@@ -97,4 +93,20 @@ public class UserServiceImpl implements UserService {
         UserDTO modifiedUser = mapper.mapToDTO(user);
         return modifiedUser;
     }
+
+    @Override
+    public UserDTO changePassword(String oldPassword, String newPassword) {
+        Long currentUser = userDetails.getCurrentUser().getId();
+
+        User user = userRepo.findById(currentUser).orElseThrow(()->new RuntimeException("USER NOT FOUND"));
+
+        if(!passwordEncoder.matches(oldPassword, user.getPassword())){
+            throw new RuntimeException("PASSWORD MISMATCH");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        return mapper.mapToDTO(userRepo.save(user));
+    }
+
+
 }

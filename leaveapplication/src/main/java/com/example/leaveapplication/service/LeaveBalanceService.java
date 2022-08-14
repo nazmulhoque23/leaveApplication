@@ -10,7 +10,9 @@ public interface LeaveBalanceService {
 
     public List<LeaveBalanceProjection> showLeaveBalanceofUsers();
 
-    public LeaveBalanceProjection showLeaveBalance();
-    public LeaveBalance updateLeaveBalance();
+    //public LeaveBalanceProjection showLeaveBalance();
+
+    public LeaveBalance showLeaveBalance();
+    //public LeaveBalance updateLeaveBalance();
     //public LeaveBalance updateLeaveBalance(LeaveBalance leaveBalance);
 }

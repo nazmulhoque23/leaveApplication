@@ -3,11 +3,14 @@ package com.example.leaveapplication.service;
 import com.example.leaveapplication.configuration.CustomUserDetailsService;
 import com.example.leaveapplication.dto.LeaveApplicationDTO;
 import com.example.leaveapplication.dto.LeaveApplicationProjection;
+import com.example.leaveapplication.dto.LeaveBalanceProjection;
 import com.example.leaveapplication.entity.LeaveApplication;
+import com.example.leaveapplication.entity.LeaveBalance;
 import com.example.leaveapplication.entity.User;
 import com.example.leaveapplication.mappers.LeaveMapStructMapper;
 import com.example.leaveapplication.mappers.LeaveTypeMapStructMapper;
 import com.example.leaveapplication.mappers.StatusMapper;
+import com.example.leaveapplication.repository.LeaveBalanceRepository;
 import com.example.leaveapplication.repository.LeaveRepository;
 import com.example.leaveapplication.repository.LeaveTypeRepository;
 import com.example.leaveapplication.repository.UserRepository;
@@ -39,6 +42,12 @@ public class LeaveServiceImpl implements LeaveService{
     @Autowired
     LeaveTypeMapStructMapper leaveTypeMapper;
 
+    @Autowired
+    LeaveBalanceService leaveBalanceService;
+
+    @Autowired
+    LeaveBalanceRepository leaveBalanceRepository;
+
     @Transactional
     @Override
     public LeaveApplicationDTO createLeave(LeaveApplicationDTO leaveApplicationDTO) {
@@ -47,6 +56,13 @@ public class LeaveServiceImpl implements LeaveService{
 
 
         Long id =  userDetailsService.getCurrentUser().getId();
+
+        LeaveBalance leaveBalance = leaveBalanceRepository.findLeaveBalanceByUserId(id);
+
+        if(leaveBalance.getSickLeaveDays()<=0  && leaveBalance.getCasualLeaveDays()<=0){
+            throw new RuntimeException("SORRY YOUR LEAVE DO NOT HAVE SUFFICIENT LEAVE BALANCES");
+        }
+
         leaveApplicationDTO.setFromDate(leaveApplicationDTO.getFromDate());
         leaveApplicationDTO.setRemark(leaveApplicationDTO.getRemark());
         leaveApplicationDTO.setToDate(leaveApplicationDTO.getToDate());
@@ -78,15 +94,17 @@ public class LeaveServiceImpl implements LeaveService{
         return leaveRepo.getAllByLeaveType(leaveType);
     }
 
-    @Autowired
-    LeaveBalanceService leaveBalanceService;
+
 
     @Transactional
     @Override
     public LeaveApplicationDTO approveorDenyUserLeave(Long id, LeaveApplicationDTO leaveDTO) {
 
 
-        LeaveApplication userLeaveRequest = leaveRepo.findByUserId(id);//.orElse(null);
+        //LeaveApplication userLeaveRequest = leaveRepo.findByUserId(id);//.orElse(null);
+        LeaveApplication userLeaveRequest = leaveRepo.findById(id).orElseThrow(()->{throw new RuntimeException("DATA NOT FOUND");});
+
+        LeaveBalance projectedLeaveBalance = leaveBalanceRepository.findLeaveBalanceByUserId(id);
 
         User userManager = userLeaveRequest.getUser().getManager();
 
@@ -97,13 +115,31 @@ public class LeaveServiceImpl implements LeaveService{
             if(approverId == userLeaveRequest.getUser().getId()||
                     userManager == null||userManager.getId()==null||
                     approverId != userManager.getId()){
-                return null;//have to write custom exception
+                throw new RuntimeException("YOU DO NOT HAVE THE AUTHORITY TO APPROVE OR DENY THE REQUEST");//have to write custom exception
             }
+        }
+
+        if(StatusMapper.mapLeaveStatus(leaveDTO.getStatus()).equals(LeaveStatus.APPROVED)){
+            userLeaveRequest.setStatus(StatusMapper.mapLeaveStatus(leaveDTO.getStatus()));
+            if(userLeaveRequest.getStatus().equals(LeaveStatus.APPROVED)){
+                int balance = projectedLeaveBalance.getSickLeaveDays()-1;
+                projectedLeaveBalance.setSickLeaveDays(balance);
+                leaveBalanceRepository.save(projectedLeaveBalance);
+            }
+
+            else if (userLeaveRequest.getStatus().equals("casual leave")){
+                int balance = projectedLeaveBalance.getCasualLeaveDays()-1;
+                projectedLeaveBalance.setCasualLeaveDays(balance);
+                leaveBalanceRepository.save(projectedLeaveBalance);
+            }
+            leaveRepo.save(userLeaveRequest);
         }
 
         userLeaveRequest.setStatus(StatusMapper.mapLeaveStatus(leaveDTO.getStatus()));
 
         leaveRepo.save(userLeaveRequest);
+
+
 
         //leaveBalanceService.updateLeaveBalance();
 

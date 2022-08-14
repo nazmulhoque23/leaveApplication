@@ -7,8 +7,9 @@ public interface UserService {
     UserDTO createUser(UserDTO user);
 
     UserDTO createManager(UserDTO user);
-
+    UserDTO changePassword(String newPassword, String oldPassword);
 
     User findByEmail(String email);
     User findByName(String name);
+
 }
