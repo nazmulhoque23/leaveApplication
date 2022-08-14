@@ -19,7 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class LeaveServiceImpl implements LeaveService{
@@ -119,6 +124,8 @@ public class LeaveServiceImpl implements LeaveService{
             }
         }
 
+
+
         if(StatusMapper.mapLeaveStatus(leaveDTO.getStatus()).equals(LeaveStatus.APPROVED)){
             userLeaveRequest.setStatus(StatusMapper.mapLeaveStatus(leaveDTO.getStatus()));
             if(userLeaveRequest.getStatus().equals(LeaveStatus.APPROVED)){
@@ -146,6 +153,15 @@ public class LeaveServiceImpl implements LeaveService{
         LeaveApplicationDTO modifiedLeaveDTO = leaveMapper.mapToDTO(userLeaveRequest);
 
         return modifiedLeaveDTO;
+    }
+
+    @Override
+    public List<LeaveApplicationProjection> getLeavesBetweenDates(LocalDate fromDate, LocalDate toDate) {
+
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy, MMM d, EEEE", Locale.forLanguageTag("sw-TZ"));
+
+
+        return leaveRepo.findAllbetweenDates(fromDate, toDate);
     }
 
 }

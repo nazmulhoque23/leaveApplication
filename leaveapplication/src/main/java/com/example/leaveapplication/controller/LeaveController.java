@@ -4,10 +4,15 @@ import com.example.leaveapplication.dto.LeaveApplicationDTO;
 import com.example.leaveapplication.dto.LeaveApplicationProjection;
 import com.example.leaveapplication.service.LeaveService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 
@@ -47,6 +52,18 @@ public class LeaveController {
 
         return ResponseEntity.ok(leaveService.approveorDenyUserLeave(id, leaveDTO));
     }
+
+    @GetMapping("getLeaveBetweenDates/")
+    public ResponseEntity<?> getAllLeavesBetweenDates(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) String fromDateParam, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) String toDateParam){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        LocalDate fromDate = LocalDate.parse(fromDateParam, formatter);
+        LocalDate toDate = LocalDate.parse(toDateParam, formatter);
+        return ResponseEntity.ok(leaveService.getLeavesBetweenDates(fromDate, toDate));
+
+
+    }
+
 
     /*@PostMapping
     public ResponseEntity<?> createEmployeeLeave(@RequestBody LeaveApplicationDTO leaveDTO){

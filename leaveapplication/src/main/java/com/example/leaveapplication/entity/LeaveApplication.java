@@ -7,7 +7,8 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 //import java.util.List;
 
 @Entity
@@ -24,14 +25,14 @@ public class LeaveApplication {
     private Long id;
 
     @Column(name = "from_date")
-    @Temporal(TemporalType.DATE)
+    //@Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date fromDate;
+    private LocalDate fromDate;
 
     @Column(name = "to_date")
-    @Temporal(TemporalType.DATE)
+    //@Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date to_date;
+    private LocalDate to_date;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
