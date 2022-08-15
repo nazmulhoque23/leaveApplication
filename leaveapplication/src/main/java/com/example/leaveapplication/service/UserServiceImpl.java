@@ -2,15 +2,9 @@ package com.example.leaveapplication.service;
 
 import com.example.leaveapplication.configuration.CustomUserDetailsService;
 import com.example.leaveapplication.dto.UserDTO;
-import com.example.leaveapplication.entity.LeaveBalance;
-import com.example.leaveapplication.entity.Role;
-import com.example.leaveapplication.entity.User;
-import com.example.leaveapplication.entity.YearlyLeave;
+import com.example.leaveapplication.entity.*;
 import com.example.leaveapplication.mappers.UserMapStructMapper;
-import com.example.leaveapplication.repository.LeaveBalanceRepository;
-import com.example.leaveapplication.repository.RoleRepository;
-import com.example.leaveapplication.repository.UserRepository;
-import com.example.leaveapplication.repository.YearlyLeaveRepository;
+import com.example.leaveapplication.repository.*;
 import com.example.leaveapplication.utils.enums.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,6 +39,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private LeaveBalanceRepository leaveBalanceRepository;
 
+    @Autowired
+    private LeaveTypeRepository leaveTypeRepository;
+
     @Override
     public User findByEmail(String email){
         return userRepo.findByEmail(email);
@@ -64,6 +61,16 @@ public class UserServiceImpl implements UserService {
         }
         UserDTO userDTO = new UserDTO();*/
 
+        LeaveType leaveType1 = leaveTypeRepository.findById(1L).orElse(null);
+        LeaveType leaveType2 = leaveTypeRepository.findById(2L).orElse(null);
+
+        Long sickLeaveDays = yearlyLeaveRepository.findMaxDay("sick leave");
+        Long casualLeaveDays = yearlyLeaveRepository.findMaxDay("casual leave");
+
+
+        if((leaveType1 == null && leaveType2 == null) &&( sickLeaveDays ==null && casualLeaveDays == null)){
+            throw new RuntimeException("Please create LEAVETYPE and YEARLY-LEAVE-BALANCE first");
+        }
 
         Role role = roleRepo.findByRoleName(RoleEnum.USER);
 
@@ -82,8 +89,6 @@ public class UserServiceImpl implements UserService {
 
 
         //leave balance appointment
-        Long sickLeaveDays = yearlyLeaveRepository.findMaxDay("sick leave");
-        Long casualLeaveDays = yearlyLeaveRepository.findMaxDay("casual leave");
 
         LeaveBalance leaveBalance = new LeaveBalance();
 
