@@ -19,6 +19,8 @@ ADMIN:
 
 
 
+
+
 USER:
 
 [POST] api/auth/login :: {"userName":"username","password":"userpassword"}
@@ -34,6 +36,9 @@ USER:
 [PUT] api/auth/change-password :: requestparam{"oldPassword"},{"newPassword"}
 
 [GET] api/auth/logout
+
+
+
 
 
 MANAGER:
