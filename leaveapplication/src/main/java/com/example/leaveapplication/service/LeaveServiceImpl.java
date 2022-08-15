@@ -73,9 +73,14 @@ public class LeaveServiceImpl implements LeaveService{
         leaveApplicationDTO.setToDate(leaveApplicationDTO.getToDate());
 
         leaveApplicationDTO.setStatus(String.valueOf(LeaveStatus.PENDING));
-        leaveApplicationDTO.setLeaveType(leaveApplicationDTO.getLeaveType());
+        
+        //leaveApplicationDTO.setLeaveType(leaveApplicationDTO.getLeaveType());
+        
         LeaveApplication userLeaveApplication = leaveMapper.mapToEntity(leaveApplicationDTO);
-
+        
+        LeaveType leaveType = leaveTypeRepository.findByName(userLeaveApplication.getLeaveType().getName());
+        userLeaveApplication.setLeaveType(leaveType);
+        
         User user = new User();
         user.setId(id);
 
