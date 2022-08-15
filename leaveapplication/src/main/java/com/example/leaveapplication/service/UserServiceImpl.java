@@ -64,8 +64,8 @@ public class UserServiceImpl implements UserService {
         LeaveType leaveType1 = leaveTypeRepository.findById(1L).orElse(null);
         LeaveType leaveType2 = leaveTypeRepository.findById(2L).orElse(null);
 
-        Long sickLeaveDays = yearlyLeaveRepository.findMaxDay("sick leave");
-        Long casualLeaveDays = yearlyLeaveRepository.findMaxDay("casual leave");
+        Long sickLeaveDays = yearlyLeaveRepository.findMaxDay(leaveType1.getName());
+        Long casualLeaveDays = yearlyLeaveRepository.findMaxDay(leaveType2.getName());
 
 
         if((leaveType1 == null && leaveType2 == null) &&( sickLeaveDays ==null && casualLeaveDays == null)){
