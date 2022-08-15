@@ -40,7 +40,7 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
     @Autowired
     LeaveTypeRepository leaveTypeRepository;
 
-    @Override
+    /*@Override
     public LeaveBalance createLeaveBalance(){
 
 
@@ -66,7 +66,7 @@ public class LeaveBalanceServiceImpl implements LeaveBalanceService {
             //}
         }
         return leaveBalance;
-    }
+    }*/
 
     @Override
     public List<LeaveBalanceProjection> showLeaveBalanceofUsers() {

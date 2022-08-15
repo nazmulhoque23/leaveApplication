@@ -21,11 +21,11 @@ public class LeaveBalanceController {
     @Autowired
     private LeaveBalanceService leaveBalanceService;
 
-    @PostMapping("createLeaveBalance/")
+    /*@PostMapping("createLeaveBalance/")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> createLeaveBalance(){
         return ResponseEntity.ok(leaveBalanceService.createLeaveBalance());
-    }
+    }*/
 
     @GetMapping("getLeaveBalances/")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")

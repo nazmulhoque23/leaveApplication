@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface LeaveBalanceService {
-    public LeaveBalance createLeaveBalance();
+    //public LeaveBalance createLeaveBalance();
 
     public List<LeaveBalanceProjection> showLeaveBalanceofUsers();
 

@@ -32,7 +32,7 @@ public class LeaveBalance {
     private Long casualLeaveDays;
 
     @Column(name = "year")
-    private String year;
+    private Integer year;
 
     public Long getId() {
         return id;
@@ -66,11 +66,11 @@ public class LeaveBalance {
         this.casualLeaveDays = casualLeaveDays;
     }
 
-    public String getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 

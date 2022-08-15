@@ -17,7 +17,7 @@ public class YearlyLeave {
     private Long id;
 
     @Column(name = "year")
-    private String year;
+    private Integer year;
 
     @Column(name = "maximum_day")
     private Long maxDay;
@@ -34,11 +34,11 @@ public class YearlyLeave {
         this.id = id;
     }
 
-    public String getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
